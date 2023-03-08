@@ -50,12 +50,8 @@ export default function CurrencyConverter() {
     setConvertedAmount(parseFloat(event.target.value) / exchangeRate[currency1] * exchangeRate[currency2]);
   }
 
-  function handleConvert() {
-    setConvertedAmount(amount / exchangeRate[currency1] * exchangeRate[currency2]);
-  }
-
   return (
-    <div>
+    <div className="main__page">
       <div className="currency-select">
         <select value={currency1} onChange={handleCurrency1Change}>
           <option value="USD">USD</option>
@@ -72,7 +68,6 @@ export default function CurrencyConverter() {
         </select>
         <input type="number" value={convertedAmount} readOnly />
       </div>
-      <button onClick={handleConvert}>Convert</button>
       {error && <div>Failed to fetch exchange rates: {error.message}</div>}
     </div>
   );
