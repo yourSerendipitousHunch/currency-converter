@@ -35,19 +35,23 @@ export default function CurrencyConverter() {
     getExchangeRate();
   }, []);
 
+  function calculateConvertedAmount(sourceCurrency: string, targetCurrency: string, amount: number) {
+    return amount / exchangeRate[sourceCurrency] * exchangeRate[targetCurrency];
+  }
+
   function handleCurrency1Change(event: React.ChangeEvent<HTMLSelectElement>) {
     setCurrency1(event.target.value);
-    setConvertedAmount(amount / exchangeRate[event.target.value] * exchangeRate[currency2]);
+    setConvertedAmount(calculateConvertedAmount(event.target.value, currency2, amount));
   }
 
   function handleCurrency2Change(event: React.ChangeEvent<HTMLSelectElement>) {
     setCurrency2(event.target.value);
-    setConvertedAmount(amount / exchangeRate[currency1] * exchangeRate[event.target.value]);
+    setConvertedAmount(calculateConvertedAmount(currency1, event.target.value, amount));
   }
 
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
     setAmount(parseFloat(event.target.value));
-    setConvertedAmount(parseFloat(event.target.value) / exchangeRate[currency1] * exchangeRate[currency2]);
+    setConvertedAmount(calculateConvertedAmount(currency1, currency2, parseFloat(event.target.value)));
   }
 
   return (
