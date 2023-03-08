@@ -30,10 +30,12 @@ export function Header() {
 
   return (
     <header>
-      <h1>Exchange Rates</h1>
-      <p>USD/UAH: {exchangeRate.USD}</p>
-      <p>EUR/UAH: {exchangeRate.EUR}</p>
-      {error && <div>Failed to fetch exchange rates: {error.message}</div>}
+      <div className="container">
+        <h1>Exchange Rates</h1>
+        <p>USD/UAH: {exchangeRate.USD}</p>
+        <p>EUR/UAH: {exchangeRate.EUR}</p>
+        {error && <div>Failed to fetch exchange rates: {error.message}</div>}
+      </div>
     </header>
   );
 }
