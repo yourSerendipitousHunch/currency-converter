@@ -9,50 +9,38 @@ interface ExchangeRate {
 
 export default function CurrencyConverter() {
   const [exchangeRate, setExchangeRate] = useState<ExchangeRate>({
-    USD: 0,
-    EUR: 0,
-    UAH: 0,
+    USD: 1,
+    EUR: 0.85,
+    UAH: 27.7,
   });
-  const [currency1, setCurrency1] = useState<string>('USD');
-  const [currency2, setCurrency2] = useState<string>('UAH');
-  const [amount, setAmount] = useState<number>(0);
-  const [convertedAmount, setConvertedAmount] = useState<number>(0);
-  const [error, setError] = useState<Error | undefined>(undefined);
+  const [currency1, setCurrency1] = useState<string>("USD");
+  const [currency2, setCurrency2] = useState<string>("UAH");
+  const [amount1, setAmount1] = useState<number>(0);
+  const [amount2, setAmount2] = useState<number>(0);
 
-  useEffect(() => {
-    const getExchangeRate = async () => {
-      try {
-        const response = await fetch(
-          'https://openexchangerates.org/api/latest.json?app_id=951c25ec7e2643d29f0f7ed23fa0ff10'
-        );
-        const data = await response.json();
-        setExchangeRate(data.rates);
-      } catch (err: unknown) {
-        setError(err as Error);
-      }
-    };
+  const handleAmount1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(event.target.value);
+    setAmount1(value);
+    setAmount2(value * exchangeRate[currency1] / exchangeRate[currency2]);
+  };
 
-    getExchangeRate();
-  }, []);
+  const handleAmount2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(event.target.value);
+    setAmount2(value);
+    setAmount1(value * exchangeRate[currency2] / exchangeRate[currency1]);
+  };
 
-  function calculateConvertedAmount(sourceCurrency: string, targetCurrency: string, amount: number) {
-    return amount / exchangeRate[sourceCurrency] * exchangeRate[targetCurrency];
-  }
+  const handleCurrency1Change = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setCurrency1(value);
+    setAmount2(amount1 * exchangeRate[value] / exchangeRate[currency2]);
+  };
 
-  function handleCurrency1Change(event: React.ChangeEvent<HTMLSelectElement>) {
-    setCurrency1(event.target.value);
-    setConvertedAmount(calculateConvertedAmount(event.target.value, currency2, amount));
-  }
-
-  function handleCurrency2Change(event: React.ChangeEvent<HTMLSelectElement>) {
-    setCurrency2(event.target.value);
-    setConvertedAmount(calculateConvertedAmount(currency1, event.target.value, amount));
-  }
-
-  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setAmount(parseFloat(event.target.value));
-    setConvertedAmount(calculateConvertedAmount(currency1, currency2, parseFloat(event.target.value)));
-  }
+  const handleCurrency2Change = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setCurrency2(value);
+    setAmount2(amount1 * exchangeRate[currency1] / exchangeRate[value]);
+  };
 
   return (
     <div className="main__page">
@@ -62,7 +50,7 @@ export default function CurrencyConverter() {
           <option value="EUR">EUR</option>
           <option value="UAH">UAH</option>
         </select>
-        <input type="number" value={amount} onChange={handleAmountChange} />
+        <input type="number" value={amount1} onChange={handleAmount1Change} />
       </div>
       <div className="currency-select">
         <select value={currency2} onChange={handleCurrency2Change}>
@@ -70,9 +58,8 @@ export default function CurrencyConverter() {
           <option value="EUR">EUR</option>
           <option value="UAH">UAH</option>
         </select>
-        <input type="number" value={convertedAmount} readOnly />
+        <input type="number" value={amount2} onChange={handleAmount2Change} />
       </div>
-      {error && <div>Failed to fetch exchange rates: {error.message}</div>}
     </div>
   );
 }
