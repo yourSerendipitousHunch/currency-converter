@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface ExchangeRate {
   [key: string]: number;
@@ -8,7 +8,7 @@ interface ExchangeRate {
 }
 
 export default function CurrencyConverter() {
-  const [exchangeRate, setExchangeRate] = useState<ExchangeRate>({
+  const [exchangeRate] = useState<ExchangeRate>({
     USD: 1,
     EUR: 0.85,
     UAH: 27.7,
